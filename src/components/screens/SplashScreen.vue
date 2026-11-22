@@ -39,259 +39,313 @@ function handleToggleDemo(): void {
 </script>
 
 <template>
-  <main class="splash-screen paper-grain-bg">
-    <!-- Decorative cut-paper clouds in sky corners -->
-    <svg class="cloud cloud-left" viewBox="0 0 180 90" aria-hidden="true">
-      <path
-        d="M25 72 H152 C164 72 172 62 172 51 C172 41 164 33 154 32 C149 16 135 6 118 6 C105 6 93 13 87 23 C81 19 74 17 66 17 C49 17 36 30 35 47 C22 48 12 56 12 63 C12 68 18 72 25 72 Z"
-        fill="#FFFDF7"
-        stroke="#E4D6BE"
-        stroke-width="3"
+  <main class="storybook-viewport">
+    <div class="storybook-stage splash-stage">
+      <!-- Full-bleed sunlit diorama panorama -->
+      <img
+        :src="assetUrl('/art/bg-level1-sunrise.png')"
+        alt=""
+        class="stage-panorama"
       />
-    </svg>
-    <svg class="cloud cloud-right" viewBox="0 0 180 90" aria-hidden="true">
-      <path
-        d="M25 72 H152 C164 72 172 62 172 51 C172 41 164 33 154 32 C149 16 135 6 118 6 C105 6 93 13 87 23 C81 19 74 17 66 17 C49 17 36 30 35 47 C22 48 12 56 12 63 C12 68 18 72 25 72 Z"
-        fill="#FFFDF7"
-        stroke="#E4D6BE"
-        stroke-width="3"
-      />
-    </svg>
+      <div class="splash-scrim" aria-hidden="true" />
+      <div class="paper-grain-overlay" aria-hidden="true" />
 
-    <div class="cover-card paper-panel anim-pop-in">
-      <div class="emblem-frame anim-float">
-        <img
-          :src="assetUrl('/art/logo-sol-y-luna.png')"
-          alt="Emblema ilustrado de Sol y Luna abrazando un reloj de papel"
-          class="cover-logo"
-          width="280"
-          height="280"
+      <!-- Drifting cut-paper clouds & twinkling stars -->
+      <svg class="sky-cloud cloud-a" viewBox="0 0 180 90" aria-hidden="true">
+        <path
+          d="M25 72 H152 C164 72 172 62 172 51 C172 41 164 33 154 32 C149 16 135 6 118 6 C105 6 93 13 87 23 C81 19 74 17 66 17 C49 17 36 30 35 47 C22 48 12 56 12 63 C12 68 18 72 25 72 Z"
+          fill="#FFFDF7"
+          opacity="0.88"
         />
+      </svg>
+      <svg class="sky-cloud cloud-b" viewBox="0 0 180 90" aria-hidden="true">
+        <path
+          d="M25 72 H152 C164 72 172 62 172 51 C172 41 164 33 154 32 C149 16 135 6 118 6 C105 6 93 13 87 23 C81 19 74 17 66 17 C49 17 36 30 35 47 C22 48 12 56 12 63 C12 68 18 72 25 72 Z"
+          fill="#FFFDF7"
+          opacity="0.84"
+        />
+      </svg>
+
+      <!-- Top bar with Teacher Demo toggle -->
+      <div class="splash-top-bar">
+        <span class="age-pill">Cuento interactivo · 5 a 7 años</span>
+
+        <button
+          type="button"
+          class="demo-gear-btn"
+          :class="{ 'is-active': progress.demoMode }"
+          :title="progress.demoMode ? 'Modo Docente activado (todos abiertos)' : 'Opciones para docentes'"
+          @click="handleToggleDemo"
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="3" />
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
+          </svg>
+          <span>{{ progress.demoMode ? 'Docente: Todo libre' : 'Modo Docente' }}</span>
+        </button>
       </div>
 
-      <div class="cover-copy">
-        <h1 class="cover-title">Sol y Luna: El Reloj de Papel</h1>
-        <p class="cover-subtitle">
-          Una aventura interactiva para descubrir tu derecho a jugar con libertad y descansar tranquilo
-        </p>
-
-        <div class="cover-cta-group">
-          <button type="button" class="paper-btn paper-btn-primary hero-cta" @click="handleStart">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-              <polygon points="6 4 20 12 6 20 6 4" />
-            </svg>
-            <span>{{ progress.hasSeenIntro ? 'Continuar aventura' : '¡Abrir el cuento!' }}</span>
-          </button>
-
-          <button
-            v-if="progress.hasSeenIntro"
-            type="button"
-            class="paper-btn paper-btn-secondary"
-            @click="handleIntroFromSplash"
-          >
-            Ver historia de Bombo
-          </button>
+      <!-- Center Living Storybook Title & Cast -->
+      <div class="splash-center anim-pop-in">
+        <div class="title-block">
+          <h1 class="story-stroked-title title-top">Sol y Luna</h1>
+          <p class="story-stroked-title title-main">El Reloj de Papel</p>
         </div>
 
-        <p class="age-note">Pensado para niñas y niños de 5 a 7 años · Con narración en voz alta</p>
-      </div>
-    </div>
+        <div class="cast-showcase">
+          <div class="emblem-medallion anim-float">
+            <img
+              :src="assetUrl('/art/logo-sol-y-luna.png')"
+              alt="Emblema de Sol y Luna abrazando el reloj de papel"
+              class="emblem-img"
+              width="210"
+              height="210"
+            />
+          </div>
 
-    <div class="splash-footer">
-      <button
-        type="button"
-        class="demo-pill"
-        :class="{ 'is-active': progress.demoMode }"
-        @click="handleToggleDemo"
-      >
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-          <path d="M7 11V7a5 5 0 0 1 9.9-1" />
-        </svg>
-        <span>Modo Docente (Demo): {{ progress.demoMode ? 'Todos desbloqueados' : 'Progresivo' }}</span>
-      </button>
+          <div class="bombo-medallion">
+            <img
+              :src="assetUrl('/art/bombo-happy.png')"
+              alt="Bombo el guardián saludando"
+              class="bombo-cover-img"
+              width="190"
+              height="190"
+            />
+          </div>
+        </div>
+
+        <p class="cover-tagline">
+          Una aventura mágica sobre tu derecho a jugar con libertad y descansar en paz
+        </p>
+      </div>
+
+      <!-- Bottom Hero CTA -->
+      <div class="splash-bottom">
+        <button type="button" class="paper-btn paper-btn-green hero-play-btn" @click="handleStart">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <polygon points="6 4 20 12 6 20 6 4" />
+          </svg>
+          <span>{{ progress.hasSeenIntro ? '¡Continuar cuento!' : '¡Abrir el cuento!' }}</span>
+        </button>
+
+        <button
+          v-if="progress.hasSeenIntro"
+          type="button"
+          class="paper-btn paper-btn-secondary replay-intro-btn"
+          @click="handleIntroFromSplash"
+        >
+          Ver historia desde el inicio
+        </button>
+      </div>
     </div>
   </main>
 </template>
 
 <style scoped>
-.splash-screen {
-  position: relative;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 2rem 1.25rem 3.5rem;
-  overflow: hidden;
+.splash-stage {
+  justify-content: space-between;
+  padding: 1.25rem 1.6rem 1.85rem;
+  background-color: #FFF4DE;
 }
 
-.cloud {
+.stage-panorama {
   position: absolute;
-  width: clamp(120px, 16vw, 200px);
-  opacity: 0.9;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+}
+
+.splash-scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(35, 28, 53, 0.16) 0%,
+    rgba(255, 244, 222, 0.08) 45%,
+    rgba(35, 28, 53, 0.22) 100%
+  );
+  z-index: 1;
+}
+
+.sky-cloud {
+  position: absolute;
+  width: clamp(110px, 14vw, 180px);
+  z-index: 2;
   pointer-events: none;
 }
 
-.cloud-left {
-  top: 6%;
-  left: 4%;
-  animation: gentleFloat 6s ease-in-out infinite;
+.cloud-a {
+  top: 14%;
+  left: 6%;
+  animation: cloudDrift 9s ease-in-out infinite;
 }
 
-.cloud-right {
-  top: 12%;
-  right: 5%;
-  animation: gentleFloat 7.2s ease-in-out infinite reverse;
+.cloud-b {
+  top: 20%;
+  right: 7%;
+  animation: cloudDrift 11s ease-in-out infinite reverse;
 }
 
-.cover-card {
+.splash-top-bar {
   position: relative;
-  z-index: 2;
-  width: 100%;
-  max-width: 820px;
-  padding: 2.2rem 2.4rem;
-  display: grid;
-  grid-template-columns: minmax(220px, 280px) 1fr;
+  z-index: 10;
+  display: flex;
   align-items: center;
-  gap: 2.1rem;
-  background: linear-gradient(155deg, #FFFDF7 0%, #FDF4E1 100%);
-}
-
-.emblem-frame {
-  padding: 0.65rem;
-  border-radius: 30px;
-  background-color: #FBF6EA;
-  border: 3px solid #E4CFA5;
-  box-shadow: var(--shadow-paper-md);
-}
-
-.cover-logo {
-  width: 100%;
-  height: auto;
-  aspect-ratio: 1 / 1;
-  border-radius: 22px;
-  object-fit: cover;
-}
-
-.cover-copy {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 1rem;
-}
-
-.cover-title {
-  font-size: clamp(2rem, 4.2vw, 2.95rem);
-  color: var(--ink-primary);
-}
-
-.cover-subtitle {
-  font-size: clamp(1.06rem, 1.8vw, 1.22rem);
-  font-weight: 700;
-  color: var(--ink-secondary);
-  line-height: 1.45;
-  max-width: 44ch;
-}
-
-.cover-cta-group {
-  display: flex;
+  justify-content: space-between;
   flex-wrap: wrap;
-  gap: 0.8rem;
-  margin-top: 0.35rem;
+  gap: 0.75rem;
 }
 
-.hero-cta {
-  min-height: 60px;
-  padding: 0.9rem 1.85rem;
-  font-size: 1.24rem;
-  background-color: #E58717;
-  box-shadow:
-    inset 0 -4px 0 #B56406,
-    0 10px 22px rgba(181, 100, 6, 0.28);
-}
-
-.age-note {
-  font-size: 0.94rem;
+.age-pill {
+  padding: 0.38rem 0.95rem;
+  border-radius: 999px;
+  background-color: rgba(255, 244, 222, 0.94);
+  border: 2px solid #DFC9A4;
+  font-family: var(--font-display);
   font-weight: 700;
-  color: var(--ink-muted);
+  font-size: 0.9rem;
+  color: var(--ink-primary);
+  box-shadow: var(--shadow-paper-sm);
 }
 
-.splash-footer {
-  position: relative;
-  z-index: 2;
-  margin-top: 1.35rem;
-}
-
-.demo-pill {
+.demo-gear-btn {
   display: inline-flex;
   align-items: center;
   gap: 0.45rem;
-  min-height: 42px;
-  padding: 0.4rem 1rem;
+  min-height: 44px;
+  padding: 0.4rem 0.95rem;
   border-radius: 999px;
-  background-color: rgba(255, 253, 247, 0.9);
-  border: 2px solid var(--paper-border);
+  background-color: rgba(255, 244, 222, 0.95);
+  border: 2px solid #DFC9A4;
+  font-family: var(--font-display);
   font-weight: 700;
-  font-size: 0.9rem;
-  color: var(--ink-secondary);
-  transition: background-color 150ms ease, border-color 150ms ease;
+  font-size: 0.88rem;
+  color: var(--ink-primary);
+  box-shadow: 0 4px 0 #D6BC91, 0 6px 14px rgba(34, 25, 48, 0.16);
+  transition: transform 130ms var(--ease-out), background-color 140ms ease;
 }
 
-.demo-pill.is-active {
+.demo-gear-btn.is-active {
   background-color: #DFF6F8;
   border-color: #2493A2;
-  color: #14535C;
+  color: #124F57;
+  box-shadow: 0 4px 0 #82C2CC;
 }
 
-@media (max-width: 720px) {
-  .splash-screen {
-    padding: 1rem 1rem 1.5rem;
-    justify-content: flex-start;
+.splash-center {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 1.05rem;
+  margin: auto 0;
+}
+
+.title-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.1rem;
+}
+
+.title-top {
+  font-size: clamp(1.55rem, 3vw, 2.25rem);
+  color: #FFFDF7;
+}
+
+.title-main {
+  font-size: clamp(2.35rem, 5.4vw, 3.8rem);
+  color: #FFE082;
+}
+
+.cast-showcase {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.4rem;
+}
+
+.emblem-medallion,
+.bombo-medallion {
+  padding: 0.55rem;
+  border-radius: 999px;
+  background-color: #FFFDF7;
+  border: 4px solid #E5C997;
+  box-shadow: var(--shadow-paper-md);
+}
+
+.emblem-img {
+  width: clamp(148px, 21vw, 205px);
+  height: auto;
+  aspect-ratio: 1 / 1;
+  border-radius: 999px;
+  object-fit: cover;
+}
+
+.bombo-cover-img {
+  width: clamp(134px, 19vw, 186px);
+  height: auto;
+  aspect-ratio: 1 / 1;
+  border-radius: 999px;
+  object-fit: contain;
+}
+
+.cover-tagline {
+  padding: 0.55rem 1.35rem;
+  border-radius: 999px;
+  background-color: rgba(255, 244, 222, 0.95);
+  border: 2px solid #DFC9A4;
+  font-weight: 800;
+  font-size: clamp(0.95rem, 1.6vw, 1.1rem);
+  color: var(--ink-primary);
+  box-shadow: var(--shadow-paper-sm);
+  max-width: 58ch;
+}
+
+.splash-bottom {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.85rem;
+}
+
+.hero-play-btn {
+  min-height: 62px;
+  padding: 0.95rem 2.3rem;
+  font-size: 1.35rem;
+}
+
+.replay-intro-btn {
+  min-height: 52px;
+}
+
+@media (max-width: 680px) {
+  .splash-stage {
+    padding: 0.9rem 0.95rem 1.25rem;
   }
 
-  .cover-card {
-    grid-template-columns: 1fr;
-    text-align: center;
-    padding: 1.25rem 1.15rem;
-    gap: 1rem;
-    margin-top: auto;
+  .cast-showcase {
+    gap: 0.75rem;
   }
 
-  .emblem-frame {
-    width: 100%;
-    max-width: 178px;
-    aspect-ratio: 1 / 1;
-    margin: 0 auto;
-    padding: 0.45rem;
+  .emblem-img {
+    width: 126px;
   }
 
-  .cover-title {
-    font-size: 1.75rem;
+  .bombo-cover-img {
+    width: 114px;
   }
 
-  .cover-subtitle {
-    font-size: 0.98rem;
-  }
-
-  .cover-copy {
-    align-items: center;
-    gap: 0.7rem;
-  }
-
-  .cover-cta-group {
-    justify-content: center;
-    width: 100%;
-  }
-
-  .hero-cta {
-    min-height: 52px;
-    font-size: 1.12rem;
-  }
-
-  .splash-footer {
-    margin-top: 0.85rem;
-    margin-bottom: auto;
+  .cover-tagline {
+    border-radius: 20px;
+    padding: 0.55rem 0.95rem;
   }
 }
 </style>

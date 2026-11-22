@@ -17,8 +17,13 @@ PHRASES = [
     "¡Qué alegría verte de nuevo! Elige un capítulo en el mapa.",
     "¡Bienvenido a Sol y Luna, el reloj de papel!",
 
-    # Character Intro
+    # Character Intro (5-Beat Story Prologue)
     "¡Hola! Soy Bombo, el guardián de Sol y Luna. El gran reloj de papel perdió su ritmo entre el juego y el descanso. ¿Me ayudas a repararlo juntos en cinco capítulos?",
+    "¡Hola! Soy Bombo, el guardián de Sol y Luna. Bienvenido a nuestro pueblo de papel, donde cada día guarda dos tesoros mágicos.",
+    "Cuando sale el Sol, todos los niños y niñas tienen derecho a jugar con libertad, imaginar, reír e incluir a cada amigo sin dejar a nadie fuera.",
+    "Y cuando sale la Luna, llega el derecho a descansar: tomar agua, respirar en calma, apagar pantallas y dormir tranquilo para crecer sanos.",
+    "Pero hoy el gran Reloj de Papel se enredó. Faltan chispas de recreo, juegos seguros y silencio nocturno. ¿Me ayudas a repararlo juntos?",
+    "¡Qué alegría tenerte en el equipo! Si quieres escribe tu nombre y elige tu sello, y abramos el mapa de los cinco capítulos.",
     "¡Jijiji! ¡Qué alegría jugar contigo! Escribe tu nombre si quieres y empecemos.",
 
     # World Map (static audio versions + locked prompts)

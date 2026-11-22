@@ -10,13 +10,18 @@ const emit = defineEmits<{
   close: []
 }>()
 
-const { progress, displayName, totalStars } = useGameProgress()
+const { progress, displayName, totalStars, resetProgress } = useGameProgress()
 const { speak } = useVoiceNarrator()
 const { playTap, playStar } = useSoundEffects()
 
 function handleClose(): void {
   playTap()
   emit('close')
+}
+
+function handleReset(): void {
+  playTap()
+  resetProgress()
 }
 
 function listenTakeaway(badgeName: string, text: string): void {
@@ -39,9 +44,14 @@ function listenTakeaway(badgeName: string, text: string): void {
           </div>
         </div>
 
-        <button type="button" class="paper-btn paper-btn-secondary close-btn" @click="handleClose">
-          Cerrar
-        </button>
+        <div class="header-actions">
+          <button type="button" class="reset-link-btn" @click="handleReset">
+            Reiniciar progreso
+          </button>
+          <button type="button" class="paper-btn paper-btn-secondary close-btn" @click="handleClose">
+            Cerrar
+          </button>
+        </div>
       </div>
 
       <div class="badges-grid">
@@ -137,6 +147,23 @@ function listenTakeaway(badgeName: string, text: string): void {
 .close-btn {
   min-height: 46px;
   padding: 0.55rem 1.2rem;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.reset-link-btn {
+  min-height: 44px;
+  padding: 0.45rem 0.9rem;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.88rem;
+  color: var(--ink-secondary);
+  border: 1.5px solid var(--paper-border);
+  background-color: var(--paper-cream-tint);
 }
 
 .badges-grid {

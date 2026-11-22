@@ -41,10 +41,18 @@ function handleRestart(): void {
 </script>
 
 <template>
-  <main class="finale-screen paper-grain-bg">
-    <ConfettiBurst :active="showConfetti" />
+  <main class="storybook-viewport">
+    <div class="storybook-stage finale-stage">
+      <img
+        :src="assetUrl('/art/bg-level5-village.png')"
+        alt=""
+        class="finale-panorama"
+      />
+      <div class="finale-scrim" aria-hidden="true" />
+      <div class="paper-grain-overlay" aria-hidden="true" />
+      <ConfettiBurst :active="showConfetti" />
 
-    <div class="diploma-card paper-panel anim-pop-in">
+      <div class="diploma-card paper-panel anim-pop-in">
       <div class="diploma-top">
         <img
           :src="assetUrl('/art/bombo-celebrate.png')"
@@ -99,32 +107,48 @@ function handleRestart(): void {
           Reiniciar aventura
         </button>
       </div>
+      </div>
     </div>
   </main>
 </template>
 
 <style scoped>
-.finale-screen {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
+.finale-stage {
+  padding: 1.15rem;
   align-items: center;
-  padding: 1rem 1.15rem;
-  background: linear-gradient(160deg, #FFF3D6 0%, #FFFDF7 48%, #ECE9FC 100%);
+  justify-content: center;
+}
+
+.finale-panorama {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+}
+
+.finale-scrim {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, rgba(255, 244, 222, 0.25) 0%, rgba(27, 21, 44, 0.45) 100%);
+  z-index: 1;
 }
 
 .diploma-card {
+  position: relative;
+  z-index: 10;
   margin: auto;
   width: 100%;
   max-width: 820px;
-  padding: 1.5rem 1.8rem;
+  padding: 1.45rem 1.75rem;
   border: 4px double #D8B87A;
   background-color: #FFFDF7;
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-  gap: 0.8rem;
+  gap: 0.78rem;
 }
 
 .diploma-top {

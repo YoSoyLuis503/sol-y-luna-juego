@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, shallowRef, watch } from 'vue'
 import type { BomboMood } from '@/types/game'
 import { useVoiceNarrator } from '@/composables/useVoiceNarrator'
 import { useSoundEffects } from '@/composables/useSoundEffects'
@@ -10,31 +10,54 @@ const {
   message,
   speechText,
   compact = false,
+  docked = false,
 } = defineProps<{
   mood?: BomboMood
   message: string
   speechText?: string
   compact?: boolean
+  docked?: boolean
 }>()
 
 const { isSpeaking, speak } = useVoiceNarrator()
 const { playTap } = useSoundEffects()
 
+const bubbleOpen = shallowRef(true)
+
+watch(
+  () => message,
+  () => {
+    bubbleOpen.value = true
+  },
+)
+
 const portraitSrc = computed(() => assetUrl(`/art/bombo-${mood}.png`))
 
 function handleSpeak(): void {
   playTap()
+  bubbleOpen.value = true
   speak(speechText ?? message)
+}
+
+function toggleBubble(): void {
+  playTap()
+  bubbleOpen.value = !bubbleOpen.value
 }
 </script>
 
 <template>
   <aside
     class="bombo-guide"
-    :class="{ 'is-compact': compact }"
+    :class="{ 'is-compact': compact, 'is-docked': docked }"
     aria-live="polite"
   >
-    <div class="bombo-sticker" :class="{ 'is-celebrate': mood === 'celebrate' }">
+    <button
+      type="button"
+      class="bombo-sticker"
+      :class="{ 'is-celebrate': mood === 'celebrate' }"
+      :aria-label="bubbleOpen ? 'Ocultar globo de Bombo' : 'Mostrar mensaje de Bombo'"
+      @click="toggleBubble"
+    >
       <img
         :src="portraitSrc"
         :alt="`Bombo ${mood}`"
@@ -43,35 +66,33 @@ function handleSpeak(): void {
         height="104"
       />
       <span class="bombo-tag">Bombo</span>
-    </div>
+    </button>
 
-    <div class="bombo-bubble">
+    <div v-if="bubbleOpen" class="bombo-bubble anim-pop-in">
       <p class="bombo-text">{{ message }}</p>
-      <div class="bombo-actions">
-        <button
-          type="button"
-          class="speak-btn"
-          :class="{ 'is-speaking': isSpeaking }"
-          @click="handleSpeak"
+      <button
+        type="button"
+        class="toy-icon-btn speak-circle-btn"
+        :class="{ 'is-speaking': isSpeaking }"
+        :aria-label="isSpeaking ? 'Escuchando a Bombo' : 'Escuchar a Bombo'"
+        :title="isSpeaking ? 'Escuchando...' : 'Escuchar'"
+        @click="handleSpeak"
+      >
+        <svg
+          width="19"
+          height="19"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.4"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
         >
-          <svg
-            width="20"
-            height="20"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2.4"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            aria-hidden="true"
-          >
-            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" fill="currentColor" />
-            <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
-            <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
-          </svg>
-          <span>{{ isSpeaking ? 'Escuchando...' : 'Escuchar' }}</span>
-        </button>
-      </div>
+          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" fill="currentColor" />
+          <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
+        </svg>
+      </button>
     </div>
   </aside>
 </template>
@@ -79,28 +100,27 @@ function handleSpeak(): void {
 <style scoped>
 .bombo-guide {
   display: flex;
-  align-items: center;
-  gap: 0.9rem;
+  align-items: flex-end;
+  gap: 0.75rem;
   width: 100%;
 }
 
 .bombo-sticker {
   position: relative;
   flex-shrink: 0;
-  width: 96px;
-  height: 96px;
+  width: 86px;
+  height: 86px;
   padding: 5px;
   background-color: #FFFDF7;
-  border: 3px solid var(--theme-border);
-  border-radius: 26px;
-  box-shadow: var(--shadow-sticker);
-  transition: transform 260ms var(--ease-spring);
+  border: 3.5px solid #DFC9A4;
+  border-radius: 999px;
+  box-shadow: 0 5px 0 #D0B589, var(--shadow-sticker);
+  transition: transform 240ms var(--ease-spring);
 }
 
-.bombo-guide.is-compact .bombo-sticker {
+.bombo-guide.is-docked .bombo-sticker {
   width: 78px;
   height: 78px;
-  border-radius: 22px;
 }
 
 .bombo-sticker.is-celebrate {
@@ -111,24 +131,24 @@ function handleSpeak(): void {
   width: 100%;
   height: 100%;
   object-fit: contain;
-  border-radius: 18px;
+  border-radius: 999px;
   background-color: #FFFDF7;
 }
 
 .bombo-tag {
   position: absolute;
-  bottom: -8px;
+  bottom: -7px;
   left: 50%;
   transform: translateX(-50%);
-  padding: 0.1rem 0.65rem;
+  padding: 0.08rem 0.6rem;
   border-radius: 999px;
   background-color: var(--theme-accent);
   color: #FFFFFF;
+  border: 2px solid #FFFDF7;
   font-family: var(--font-display);
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   font-weight: 700;
-  letter-spacing: 0.01em;
-  box-shadow: 0 2px 6px rgba(43, 36, 51, 0.18);
+  box-shadow: 0 2px 6px rgba(34, 25, 48, 0.22);
 }
 
 .bombo-bubble {
@@ -138,75 +158,56 @@ function handleSpeak(): void {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 0.85rem;
-  padding: 0.85rem 1.15rem;
-  background-color: var(--theme-surface);
-  border: 2px solid var(--theme-border);
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  background-color: rgba(255, 244, 222, 0.97);
+  border: 2.5px solid #DFC9A4;
   border-radius: 22px;
-  box-shadow: var(--shadow-paper-sm);
+  box-shadow: 0 5px 0 #D8BE94, 0 12px 24px rgba(24, 19, 38, 0.18);
+}
+
+.bombo-bubble::before {
+  content: '';
+  position: absolute;
+  left: -9px;
+  bottom: 18px;
+  width: 14px;
+  height: 14px;
+  background-color: #FFF4DE;
+  border-left: 2.5px solid #DFC9A4;
+  border-bottom: 2.5px solid #DFC9A4;
+  transform: rotate(45deg);
 }
 
 .bombo-text {
-  font-size: 1.03rem;
+  font-size: 0.99rem;
   font-weight: 700;
   line-height: 1.38;
-  color: var(--theme-ink);
+  color: var(--ink-primary);
 }
 
-.bombo-actions {
+.speak-circle-btn {
   flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  background-color: #FFFDF7;
 }
 
-.speak-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  min-height: 44px;
-  padding: 0.45rem 0.9rem;
-  border-radius: 999px;
-  background-color: var(--theme-accent-soft);
-  color: var(--theme-ink);
-  border: 2px solid var(--theme-border);
-  font-family: var(--font-display);
-  font-weight: 600;
-  font-size: 0.92rem;
-  transition:
-    transform 150ms var(--ease-out),
-    background-color 150ms ease;
-}
-
-.speak-btn.is-speaking {
+.speak-circle-btn.is-speaking {
   background-color: var(--theme-accent);
-  color: #FFFFFF;
   border-color: var(--theme-accent-deep);
+  color: #FFFFFF;
+  box-shadow: 0 3px 0 var(--theme-accent-deep);
 }
 
-@media (hover: hover) and (pointer: fine) {
-  .speak-btn:hover {
-    transform: translateY(-1px);
-  }
-}
-
-@media (max-width: 680px) {
-  .bombo-guide {
-    align-items: flex-start;
-  }
-
+@media (max-width: 640px) {
   .bombo-sticker {
-    width: 72px;
-    height: 72px;
-    border-radius: 18px;
-  }
-
-  .bombo-bubble {
-    flex-direction: column;
-    align-items: flex-start;
-    padding: 0.75rem 0.95rem;
-    gap: 0.55rem;
+    width: 68px;
+    height: 68px;
   }
 
   .bombo-text {
-    font-size: 0.96rem;
+    font-size: 0.92rem;
   }
 }
 </style>

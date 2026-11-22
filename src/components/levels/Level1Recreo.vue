@@ -40,6 +40,7 @@ const ROOM_ITEMS: readonly RoomItem[] = [
 ]
 
 const foundToyIds = reactive<string[]>([])
+const lastPopId = shallowRef<string | null>(null)
 const toyGoal = 5
 
 const act1Done = computed(() => foundToyIds.length >= toyGoal)
@@ -48,6 +49,10 @@ function tapRoomItem(item: RoomItem): void {
   if (item.isToy) {
     if (foundToyIds.includes(item.id)) return
     foundToyIds.push(item.id)
+    lastPopId.value = item.id
+    window.setTimeout(() => {
+      if (lastPopId.value === item.id) lastPopId.value = null
+    }, 900)
     playStar()
     emit('feedback', { kind: 'success', text: `${item.label}: ${item.hint}` })
 
@@ -407,6 +412,7 @@ watch(
           </svg>
 
           <span class="hotspot-label">{{ item.label }}</span>
+          <span v-if="lastPopId === item.id" class="story-stroked-label pop-burst" aria-hidden="true">¡Chispa!</span>
         </button>
       </div>
 
@@ -571,8 +577,8 @@ watch(
 .bedroom-scene {
   position: relative;
   width: 100%;
-  min-height: 290px;
-  height: 310px;
+  min-height: 240px;
+  height: 265px;
   border-radius: 22px;
   overflow: hidden;
   border: 3px solid var(--theme-border);
@@ -625,6 +631,16 @@ watch(
   padding: 0.08rem 0.45rem;
   border-radius: 999px;
   white-space: nowrap;
+}
+
+.pop-burst {
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  font-size: 1.05rem;
+  color: #FFE082;
+  pointer-events: none;
+  animation: floatPopUp 850ms var(--ease-out) forwards;
 }
 
 .act-footer {

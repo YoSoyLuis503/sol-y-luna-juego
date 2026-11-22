@@ -32,7 +32,7 @@ const emit = defineEmits<{
 }>()
 
 const { completeLevel } = useGameProgress()
-const { playPageTurn, playLevelFanfare, playStar } = useSoundEffects()
+const { playPageTurn, playLevelFanfare, playStar, playTap } = useSoundEffects()
 const { speak, stop } = useVoiceNarrator()
 
 const meta = computed(() => getLevelMeta(levelId))
@@ -163,86 +163,93 @@ function handleGoMap(): void {
 </script>
 
 <template>
-  <div class="level-world" :data-theme="meta.themeKey">
-    <div
-      class="level-backdrop"
-      :style="{ backgroundImage: `url(${meta.backgroundArt})` }"
-      aria-hidden="true"
-    />
-    <div class="level-tint" aria-hidden="true" />
-
-    <ConfettiBurst :active="confettiActive" />
-
-    <div class="level-shell">
-      <TopHud
-        :level-meta="meta"
-        :current-act="currentAct"
-        :show-back-to-map="true"
-        @go-map="handleGoMap"
-        @open-album="emit('openAlbum')"
+  <div class="storybook-viewport" :data-theme="meta.themeKey">
+    <div class="storybook-stage level-diorama">
+      <!-- Vivid Full-Bleed Chapter Panorama -->
+      <img
+        :src="meta.backgroundArt"
+        alt=""
+        class="diorama-panorama"
       />
+      <div class="diorama-tint" aria-hidden="true" />
+      <div class="paper-grain-overlay" aria-hidden="true" />
 
-      <!-- Chapter Opening Card -->
-      <main v-if="!hasStarted" class="chapter-opener">
-        <div class="opener-card paper-panel anim-pop-in">
-          <div class="opener-art-wrap">
-            <img
-              :src="meta.backgroundArt"
-              :alt="meta.title"
-              class="opener-bg-preview"
-            />
-            <img
-              :src="assetUrl('/art/bombo-happy.png')"
-              alt="Bombo te invita al capítulo"
-              class="opener-bombo"
-              width="124"
-              height="124"
-            />
+      <ConfettiBurst :active="confettiActive" />
+
+      <div class="level-hud-wrap">
+        <TopHud
+          :level-meta="meta"
+          :current-act="currentAct"
+          :show-back-to-map="true"
+          @go-map="handleGoMap"
+          @open-album="emit('openAlbum')"
+        />
+      </div>
+
+      <!-- Chapter Briefing Modal over live panorama -->
+      <main v-if="!hasStarted" class="briefing-backdrop">
+        <div class="briefing-card anim-pop-in">
+          <div class="briefing-top">
+            <span class="chapter-pill">{{ meta.chapterLabel }}</span>
+            <span class="facet-pill">{{ meta.facetTitle }}</span>
           </div>
 
-          <div class="opener-copy">
-            <span class="chapter-ribbon">{{ meta.chapterLabel }}</span>
-            <h1 class="opener-title">{{ meta.title }}</h1>
-            <p class="opener-facet">{{ meta.facetTitle }}</p>
-            <p class="opener-desc">{{ meta.facetSummary }}</p>
-
-            <div class="opener-acts-preview">
-              <div v-for="(act, idx) in meta.acts" :key="act" class="opener-act-chip">
-                <span class="chip-num">{{ idx + 1 }}</span>
-                <span>{{ act }}</span>
-              </div>
+          <div class="briefing-hero">
+            <div class="briefing-bombo-ring">
+              <img
+                :src="assetUrl(levelId === 5 ? '/art/bombo-sleepy.png' : '/art/bombo-happy.png')"
+                alt="Bombo te invita al capítulo"
+                class="briefing-bombo"
+                width="120"
+                height="120"
+              />
             </div>
-
-            <div class="opener-actions">
-              <button type="button" class="paper-btn paper-btn-primary" @click="startChapter">
-                ¡Empezar capítulo!
-              </button>
-              <button type="button" class="paper-btn paper-btn-secondary" @click="speak(meta.introScript)">
-                Escuchar a Bombo
-              </button>
+            <div class="briefing-copy">
+              <h1 class="briefing-title">{{ meta.title }}</h1>
+              <p class="briefing-story">{{ meta.introScript }}</p>
             </div>
+          </div>
+
+          <div class="briefing-acts">
+            <span v-for="(act, idx) in meta.acts" :key="act" class="brief-act-chip">
+              <strong>{{ idx + 1 }}</strong>
+              <span>{{ act }}</span>
+            </span>
+          </div>
+
+          <div class="briefing-actions">
+            <button
+              type="button"
+              class="toy-icon-btn"
+              aria-label="Escuchar a Bombo"
+              title="Escuchar a Bombo"
+              @click="playTap(); speak(meta.introScript)"
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+                <path d="M15.54 8.46a5 5 0 0 1 0 7.07" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" />
+              </svg>
+            </button>
+
+            <button type="button" class="paper-btn paper-btn-green briefing-play-btn" @click="startChapter">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <polygon points="6 4 20 12 6 20 6 4" />
+              </svg>
+              <span>¡A jugar!</span>
+            </button>
           </div>
         </div>
       </main>
 
-      <!-- Active Level Gameplay & Story Transitions -->
-      <main v-else class="level-main">
+      <!-- Open Theatrical Stage & Story Transitions -->
+      <main v-else class="theatrical-main">
         <ChapterTrailBar
           :level-meta="meta"
           :current-act="currentAct"
           :in-transition="Boolean(activeBridge)"
         />
 
-        <BomboGuide
-          v-if="!activeBridge"
-          :mood="bomboMood"
-          :message="bomboMessage"
-          :compact="true"
-        />
-
-        <FeedbackBanner v-if="!activeBridge" :feedback="feedback" />
-
-        <section class="stage-card paper-panel" :aria-label="meta.title">
+        <div class="play-canvas">
           <Transition name="page-turn" mode="out-in">
             <StoryBridgeScene
               v-if="activeBridge"
@@ -252,7 +259,7 @@ function handleGoMap(): void {
               @continue="continuePastBridge"
             />
 
-            <div v-else :key="`act-${levelId}-${currentAct}`">
+            <div v-else :key="`act-${levelId}-${currentAct}`" class="act-parchment">
               <Level1Recreo
                 v-if="levelId === 1"
                 :act="currentAct"
@@ -300,7 +307,17 @@ function handleGoMap(): void {
               />
             </div>
           </Transition>
-        </section>
+        </div>
+
+        <div v-if="!activeBridge" class="bottom-narrator-row">
+          <BomboGuide
+            :mood="bomboMood"
+            :message="bomboMessage"
+            :compact="true"
+            :docked="true"
+          />
+          <FeedbackBanner :feedback="feedback" class="narrator-feedback" />
+        </div>
       </main>
     </div>
 
@@ -315,179 +332,231 @@ function handleGoMap(): void {
 </template>
 
 <style scoped>
-.level-world {
-  position: relative;
-  min-height: 100vh;
-  padding: 0.9rem 1rem 2rem;
-  overflow-x: hidden;
+.level-diorama {
+  justify-content: space-between;
+  padding: 0.95rem 1.25rem 1.05rem;
+  gap: 0.65rem;
 }
 
-.level-backdrop {
-  position: fixed;
+.diorama-panorama {
+  position: absolute;
   inset: 0;
-  background-size: cover;
-  background-position: center;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
   z-index: 0;
 }
 
-.level-tint {
-  position: fixed;
+.diorama-tint {
+  position: absolute;
   inset: 0;
   background-color: var(--theme-backdrop-tint);
   z-index: 1;
-  transition: background-color 300ms ease;
 }
 
-.level-shell {
+.level-hud-wrap {
   position: relative;
-  z-index: 2;
-  width: 100%;
-  max-width: 1080px;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
+  z-index: 20;
 }
 
-.chapter-opener {
+/* Centered Briefing Modal */
+.briefing-backdrop {
+  position: relative;
+  z-index: 15;
+  flex: 1;
   display: flex;
+  align-items: center;
   justify-content: center;
-  padding-top: 0.8rem;
+  padding: 0.5rem 0;
 }
 
-.opener-card {
+.briefing-card {
   width: 100%;
-  max-width: 860px;
-  padding: 1.8rem;
-  display: grid;
-  grid-template-columns: 300px 1fr;
-  gap: 1.7rem;
-  align-items: center;
-}
-
-.opener-art-wrap {
-  position: relative;
+  max-width: 680px;
+  padding: 1.65rem 1.85rem;
+  border-radius: 28px;
+  background-color: #FFF4DE;
+  border: 3px solid #DFC9A4;
+  box-shadow:
+    0 8px 0 #DFC597,
+    0 24px 48px rgba(20, 15, 34, 0.34);
   display: flex;
   flex-direction: column;
+  gap: 1.05rem;
+}
+
+.briefing-top {
+  display: flex;
   align-items: center;
-}
-
-.opener-bg-preview {
-  width: 100%;
-  aspect-ratio: 4 / 3;
-  object-fit: cover;
-  border-radius: 22px;
-  border: 3px solid var(--theme-border);
-  box-shadow: var(--shadow-paper-sm);
-}
-
-.opener-bombo {
-  margin-top: -54px;
-  width: 112px;
-  height: 112px;
-  border-radius: 26px;
-  border: 3px solid var(--theme-border);
-  background-color: #FFFDF7;
-  object-fit: contain;
-  box-shadow: var(--shadow-sticker);
-}
-
-.opener-copy {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 0.7rem;
-}
-
-.chapter-ribbon {
-  padding: 0.25rem 0.85rem;
-  border-radius: 999px;
-  background-color: var(--theme-accent-soft);
-  border: 2px solid var(--theme-border);
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 0.92rem;
-  color: var(--theme-ink);
-}
-
-.opener-title {
-  font-size: clamp(1.65rem, 3.2vw, 2.35rem);
-}
-
-.opener-facet {
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 1.08rem;
-  color: var(--theme-accent-deep);
-}
-
-.opener-desc {
-  font-size: 1.02rem;
-  font-weight: 700;
-  color: var(--theme-ink-soft);
-  line-height: 1.45;
-}
-
-.opener-acts-preview {
-  display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
-  margin: 0.25rem 0;
+  gap: 0.55rem;
 }
 
-.opener-act-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.45rem;
-  padding: 0.35rem 0.8rem 0.35rem 0.4rem;
-  border-radius: 999px;
-  background-color: var(--theme-surface-alt);
-  border: 1.5px solid var(--theme-border);
-  font-size: 0.88rem;
-  font-weight: 700;
-}
-
-.chip-num {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 24px;
-  height: 24px;
+.chapter-pill {
+  padding: 0.25rem 0.85rem;
   border-radius: 999px;
   background-color: var(--theme-accent);
   color: #FFFFFF;
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: 0.82rem;
+  font-size: 0.9rem;
 }
 
-.opener-actions {
+.facet-pill {
+  padding: 0.25rem 0.85rem;
+  border-radius: 999px;
+  background-color: #E86A92;
+  color: #FFFFFF;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.86rem;
+}
+
+.briefing-hero {
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem;
-  margin-top: 0.35rem;
+  align-items: center;
+  gap: 1.15rem;
 }
 
-.level-main {
+.briefing-bombo-ring {
+  flex-shrink: 0;
+  width: 112px;
+  height: 112px;
+  padding: 5px;
+  border-radius: 999px;
+  background-color: #FFFDF7;
+  border: 3px solid #DFC9A4;
+  box-shadow: var(--shadow-paper-sm);
+}
+
+.briefing-bombo {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 999px;
+}
+
+.briefing-copy {
   display: flex;
   flex-direction: column;
-  gap: 0.7rem;
+  gap: 0.4rem;
 }
 
-.stage-card {
-  padding: 1.35rem 1.45rem;
-  min-height: 410px;
+.briefing-title {
+  font-size: clamp(1.55rem, 3vw, 2.15rem);
 }
 
-@media (max-width: 760px) {
-  .opener-card {
+.briefing-story {
+  font-size: 1.06rem;
+  font-weight: 700;
+  color: #463D57;
+  line-height: 1.45;
+}
+
+.briefing-acts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.brief-act-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.3rem 0.78rem 0.3rem 0.38rem;
+  border-radius: 999px;
+  background-color: #FFFDF7;
+  border: 1.5px solid #DFC9A4;
+  font-size: 0.86rem;
+  font-weight: 700;
+}
+
+.brief-act-chip strong {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  background-color: var(--theme-accent);
+  color: #FFFFFF;
+  font-family: var(--font-display);
+  font-size: 0.78rem;
+}
+
+.briefing-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.85rem;
+}
+
+.briefing-play-btn {
+  min-height: 54px;
+  padding: 0.75rem 1.85rem;
+}
+
+/* Theatrical Open Play Area */
+.theatrical-main {
+  position: relative;
+  z-index: 15;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 0.65rem;
+}
+
+.play-canvas {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.act-parchment {
+  padding: 0.85rem 1.05rem;
+  border-radius: 26px;
+  background-color: rgba(255, 249, 238, 0.9);
+  border: 2.5px solid rgba(223, 201, 164, 0.95);
+  box-shadow: 0 12px 30px rgba(24, 19, 38, 0.18);
+  backdrop-filter: blur(2px);
+}
+
+.bottom-narrator-row {
+  display: grid;
+  grid-template-columns: minmax(280px, 1.35fr) minmax(200px, 1fr);
+  align-items: end;
+  gap: 0.75rem;
+}
+
+@media (max-width: 820px) {
+  .bottom-narrator-row {
     grid-template-columns: 1fr;
-    padding: 1.3rem;
-    gap: 1.1rem;
   }
 
-  .stage-card {
-    padding: 1rem;
+  .briefing-hero {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .briefing-actions {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 640px) {
+  .level-diorama {
+    padding: 0.7rem 0.75rem 0.9rem;
+  }
+
+  .act-parchment {
+    padding: 0.85rem;
+    border-radius: 20px;
+  }
+
+  .briefing-card {
+    padding: 1.2rem;
   }
 }
 </style>
