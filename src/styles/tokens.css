@@ -1,0 +1,120 @@
+:root {
+  /* Fonts */
+  --font-display: 'Fredoka', 'Nunito', system-ui, sans-serif;
+  --font-body: 'Nunito', system-ui, -apple-system, sans-serif;
+
+  /* Handcrafted Papercraft Surfaces */
+  --paper-parchment: #FBF6EA;
+  --paper-card: #FFFDF7;
+  --paper-kraft: #EFE4CE;
+  --paper-cream-tint: #F7EFE0;
+  --paper-border: #D9C9AD;
+
+  /* Ink & Contrast */
+  --ink-primary: #2B2433;
+  --ink-secondary: #534A5E;
+  --ink-muted: #6E647A;
+  --ink-on-accent: #FFFFFF;
+
+  /* Storybook Palette */
+  --sun-gold: #F29F24;
+  --sun-gold-deep: #C97A0C;
+  --coral-play: #E3644B;
+  --coral-play-deep: #B8422B;
+  --teal-sky: #2493A2;
+  --teal-sky-deep: #186C78;
+  --meadow-green: #38945D;
+  --meadow-green-deep: #256A41;
+  --twilight-indigo: #5E56A8;
+  --twilight-indigo-deep: #413A82;
+  --star-amber: #F5B82E;
+
+  /* Active Level Theme Defaults (Level 1 Sunrise) */
+  --theme-accent: var(--sun-gold);
+  --theme-accent-deep: var(--sun-gold-deep);
+  --theme-accent-soft: #FFF1D6;
+  --theme-backdrop-tint: rgba(251, 246, 234, 0.78);
+  --theme-surface: #FFFDF7;
+  --theme-surface-alt: #F9F1E2;
+  --theme-ink: #2B2433;
+  --theme-ink-soft: #534A5E;
+  --theme-border: #DECBA8;
+
+  /* Tactile Depth (offset + soft blur, never harsh zero-blur) */
+  --shadow-paper-sm: 0 4px 12px rgba(43, 36, 51, 0.1), 0 2px 4px rgba(43, 36, 51, 0.07);
+  --shadow-paper-md: 0 10px 24px rgba(43, 36, 51, 0.13), 0 3px 8px rgba(43, 36, 51, 0.08);
+  --shadow-paper-lg: 0 18px 40px rgba(34, 27, 46, 0.18), 0 6px 14px rgba(34, 27, 46, 0.1);
+  --shadow-sticker: 0 8px 18px rgba(43, 36, 51, 0.16);
+
+  /* Radii */
+  --radius-sm: 14px;
+  --radius-md: 22px;
+  --radius-lg: 30px;
+  --radius-pill: 999px;
+
+  /* Motion Curves (animate skill) */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Atmospheric progression across the 5 chapters */
+[data-theme='level-1'] {
+  --theme-accent: #E58717;
+  --theme-accent-deep: #B56406;
+  --theme-accent-soft: #FFF0CF;
+  --theme-backdrop-tint: rgba(255, 247, 230, 0.74);
+  --theme-surface: #FFFDF7;
+  --theme-surface-alt: #FBF1DB;
+  --theme-ink: #2B2433;
+  --theme-ink-soft: #534A5E;
+  --theme-border: #E4CFA5;
+}
+
+[data-theme='level-2'] {
+  --theme-accent: #1F8A99;
+  --theme-accent-deep: #14636F;
+  --theme-accent-soft: #DFF6F8;
+  --theme-backdrop-tint: rgba(243, 250, 252, 0.72);
+  --theme-surface: #FFFDF7;
+  --theme-surface-alt: #ECF7F6;
+  --theme-ink: #1F2E36;
+  --theme-ink-soft: #435761;
+  --theme-border: #BFE0E2;
+}
+
+[data-theme='level-3'] {
+  --theme-accent: #D6573F;
+  --theme-accent-deep: #A63A26;
+  --theme-accent-soft: #FFEBE5;
+  --theme-backdrop-tint: rgba(252, 248, 241, 0.7);
+  --theme-surface: #FFFDF8;
+  --theme-surface-alt: #F5F8EE;
+  --theme-ink: #282735;
+  --theme-ink-soft: #4D4C5E;
+  --theme-border: #D9CFC0;
+}
+
+[data-theme='level-4'] {
+  --theme-accent: #2F8D57;
+  --theme-accent-deep: #1E643B;
+  --theme-accent-soft: #E1F5E8;
+  --theme-backdrop-tint: rgba(253, 242, 229, 0.74);
+  --theme-surface: #FFFDF7;
+  --theme-surface-alt: #F9EFE0;
+  --theme-ink: #2B2327;
+  --theme-ink-soft: #57484D;
+  --theme-border: #DEC6AF;
+}
+
+[data-theme='level-5'] {
+  --theme-accent: #6A61B8;
+  --theme-accent-deep: #483F91;
+  --theme-accent-soft: #ECE9FC;
+  --theme-backdrop-tint: rgba(24, 24, 58, 0.62);
+  --theme-surface: #FFFDF7;
+  --theme-surface-alt: #F2EFFA;
+  --theme-ink: #231F3A;
+  --theme-ink-soft: #48426B;
+  --theme-border: #C9C1EB;
+}

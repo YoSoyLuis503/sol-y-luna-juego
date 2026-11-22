@@ -1,0 +1,146 @@
+@keyframes popIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.92) translateY(8px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes gentleFloat {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+@keyframes squashPop {
+  0% {
+    transform: scale(1);
+  }
+  35% {
+    transform: scale(1.14, 0.88);
+  }
+  70% {
+    transform: scale(0.95, 1.06);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes starBounce {
+  0% {
+    opacity: 0;
+    transform: scale(0.75) rotate(-14deg);
+  }
+  65% {
+    opacity: 1;
+    transform: scale(1.14) rotate(4deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+}
+
+@keyframes softPulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.9;
+  }
+  50% {
+    transform: scale(1.045);
+    opacity: 1;
+  }
+}
+
+@keyframes confettiFall {
+  0% {
+    opacity: 1;
+    transform: translate3d(0, -10px, 0) rotate(0deg);
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(var(--dx, 0px), var(--dy, 180px), 0) rotate(var(--rot, 320deg));
+  }
+}
+
+@keyframes fireflyGlow {
+  0%,
+  100% {
+    opacity: 0.55;
+    transform: translateY(0) scale(0.92);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(-8px) scale(1.15);
+  }
+}
+
+@keyframes fadeOnly {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.anim-pop-in {
+  animation: popIn 260ms var(--ease-out) both;
+}
+
+.anim-float {
+  animation: gentleFloat 4.2s ease-in-out infinite;
+}
+
+.anim-squash {
+  animation: squashPop 280ms var(--ease-out);
+}
+
+/* Storybook chapter/act page transition */
+.page-turn-enter-active {
+  transition: opacity 220ms var(--ease-out), transform 240ms var(--ease-out);
+}
+
+.page-turn-leave-active {
+  transition: opacity 160ms var(--ease-out), transform 160ms var(--ease-out);
+}
+
+.page-turn-enter-from {
+  opacity: 0;
+  transform: translateX(14px) scale(0.98);
+}
+
+.page-turn-leave-to {
+  opacity: 0;
+  transform: translateX(-14px) scale(0.98);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .anim-pop-in,
+  .anim-float,
+  .anim-squash {
+    animation-name: fadeOnly;
+    animation-duration: 180ms;
+    animation-iteration-count: 1;
+  }
+
+  .page-turn-enter-from,
+  .page-turn-leave-to {
+    transform: none;
+  }
+
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+  }
+}
